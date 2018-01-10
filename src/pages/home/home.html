@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-navbar color="primary">
+    
+    <ion-title>
+      TO-DOs
+    </ion-title>
+
+    
+  
+  </ion-navbar>
+</ion-header>
+
+<ion-content no-padding>
+	<ion-list>
+    <ion-item-sliding *ngFor="let item of items index as i">
+      <ion-item class="todo" (click)="viewItem(item)">
+        <h3>{{item.title}}</h3>
+        <p float-right>{{item.taskDate}}</p>
+        <p>{{item.description}}</p>
+      </ion-item>
+      <ion-item-options slide="left">
+        <button padding color="primary" ion-button icon-only (click)="options(i, item)" >Edit</button>
+        <button color="danger" ion-button icon-only (click)="options(i)" ><ion-icon name="trash"></ion-icon></button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <ion-fab right bottom>
+    <button ion-fab color="light" (click)="addItem()"><ion-icon name="add"></ion-icon></button>
+  </ion-fab>
+</ion-content>
