@@ -14,10 +14,12 @@ import { NavController, NavParams } from 'ionic-angular';
 })
 export class ItemDetailPage {
 	public item;
+	
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }
 
   ionViewDidLoad() {
+  	// fetch task to show
   	this.item = this.navParams.get('item');  	
   }
 

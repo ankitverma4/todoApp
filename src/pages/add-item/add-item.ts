@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams , ViewController, ToastController } from 'ionic-angular';
-
+import { NavController, NavParams , ViewController } from 'ionic-angular';
+import { DataProvider } from '../../providers/data/data';
 /**
  * Generated class for the AddItemPage page.
  *
@@ -18,34 +18,46 @@ export class AddItemPage {
 	title: string;
 	description: string;
 	taskDate: string;
+	taskTime: string;
 
 	updateMode: boolean = false;
-	constructor(public navCtrl: NavController,public navParams: NavParams ,public view: ViewController, public toastCtrl: ToastController) {
+
+	constructor(public navCtrl: NavController,public navParams: NavParams ,public view: ViewController, public dataService: DataProvider) {
 	}
 
+	// get data if for update
   	ionViewDidLoad() {
   		if(this.navParams.get('item')){
   			var temp = this.navParams.get('item')
 		  	this.title = temp.title;
 		  	this.description = temp.description;
 		  	this.taskDate = temp.taskDate;
+		  	this.taskTime = temp.taskTime;
 		  	this.updateMode = true;
   		}
 	}
 
+	// save the task
 	saveItem(){
 		if(this.updateMode){
-			
-			let newItem = {
-					item:{
-						title: this.title,
-						description: this.description,
-						taskDate: this.taskDate,
-					},
-					index: this.navParams.get('index')
-				};
+			if(this.title){
+				let newItem = {
+						item:{
+							title: this.title,
+							description: this.description,
+							taskDate: this.taskDate,
+							taskTime: this.taskTime
+						},
+						index: this.navParams.get('index')
+					};
 
-			this.view.dismiss(newItem);
+				this.view.dismiss(newItem);
+			}
+
+			else{
+				// show toast message
+				this.dataService.showToast("bottom", "Title cannot be empty", 2500);
+			}
 		}
 
 		else{
@@ -53,24 +65,21 @@ export class AddItemPage {
 				let newItem = {
 					title: this.title,
 					description: this.description,
-					taskDate: this.taskDate
+					taskDate: this.taskDate,
+					taskTime: this.taskTime
 				};
 				this.view.dismiss(newItem); 
 			}
 
 			else{
-				let toast = this.toastCtrl.create({
-
-					position: 'bottom',
-					message: "Title cannot be empty.",
-					duration: 3000
-				})
-				toast.present();
+				// show toast message
+				this.dataService.showToast("bottom", "Title cannot be empty", 2500);
 			}
 		}
 
 	}
 
+	// close the add task modal
 	close(){
 		this.view.dismiss();
 	}

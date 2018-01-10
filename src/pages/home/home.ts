@@ -16,6 +16,7 @@ export class HomePage {
 
 	constructor(public navCtrl: NavController, public modalCtrl: ModalController, public dataService: DataProvider) {
 
+		// check if storage have some data
 		this.dataService.getData().then((data) => {
 			if(data){
 				this.items = data;
