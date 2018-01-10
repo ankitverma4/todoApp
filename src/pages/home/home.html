@@ -19,13 +19,13 @@
         <p>{{item.description}}</p>
       </ion-item>
       <ion-item-options slide="left">
-        <button padding color="primary" ion-button icon-only (click)="options(i, item)" >Edit</button>
-        <button color="danger" ion-button icon-only (click)="options(i)" ><ion-icon name="trash"></ion-icon></button>
+        <button padding color="primary" ion-button icon-only (click)="saveItem(i, item)" >Edit</button>
+        <button color="danger" ion-button icon-only (click)="delete(i)" ><ion-icon name="trash"></ion-icon></button>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
 
   <ion-fab right bottom>
-    <button ion-fab color="light" (click)="addItem()"><ion-icon name="add"></ion-icon></button>
+    <button ion-fab color="light" (click)="saveItem()"><ion-icon name="add"></ion-icon></button>
   </ion-fab>
 </ion-content>

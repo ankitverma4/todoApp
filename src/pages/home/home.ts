@@ -23,38 +23,42 @@ export class HomePage {
 		})
 	}
 
-	addItem(){
-		let addMdal = this.modalCtrl.create(AddItemPage);
+	// save or update item
+	saveItem(index?:number, item?){
+		var saveModal;
+		if(item){
+			saveModal = this.modalCtrl.create(AddItemPage, {item: item, index: index});
+			saveModal.onDidDismiss((item) => {
+				if(item){
+					this.items[index] = item.item;
+					this.dataService.saveData(this.items);
+				}
+			});
+			saveModal.present();
+		}
 
-		addMdal.onDidDismiss((item) => {
-			if(item){
-				this.items.push(item);
-				this.dataService.saveData(this.items);
-			}
-		});
-		addMdal.present();
+		else{
+			saveModal = this.modalCtrl.create(AddItemPage);
+
+			saveModal.onDidDismiss((item) => {
+				if(item){
+					this.items.push(item);
+					this.dataService.saveData(this.items);
+				}
+			});
+			saveModal.present();
+		}
 	}
 
+	// view task on other page
 	viewItem(item){
 		this.navCtrl.push(ItemDetailPage, {
 			item: item
 		});
 	}
-
-	options(index: number, item?){
-		if(item){
-			let addMdal = this.modalCtrl.create(AddItemPage, {item: item, index: index});
-			addMdal.onDidDismiss((item) => {
-				if(item.index){
-					this.items[index] = item.item;
-					this.dataService.saveData(this.items);
-				}
-			});
-			addMdal.present();
-		}
-		else{
+	// delete task
+	delete(index: number, item?){
 			this.items.splice(index,1);
 			this.dataService.saveData(this.items);
-		}
 	}
 }
