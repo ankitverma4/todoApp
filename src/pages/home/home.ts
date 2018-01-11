@@ -56,52 +56,7 @@ export class HomePage {
 			saveModal = this.modalCtrl.create(AddItemPage, {item: item, index: index, taskType: taskType});
 			saveModal.onDidDismiss((item) => {
 				if(item){
-					switch (item.taskType) {
-						case "current":
-							if(this.compareDate(item.item.taskDate)){
-								this.todayTasks[item.index] = item.item;
-								this.addNotifications(this.todayTasks);
-
-								this.dataService.saveData('current',this.todayTasks);
-
-							}
-							else{
-								this.pendingTasks.push(item.item);
-								this.todayTasks.splice(item.index,1);
-								this.addNotifications(this.todayTasks);
-
-								this.dataService.saveData('pending',this.pendingTasks);
-								this.dataService.saveData('current',this.todayTasks);
-
-							}
-							break;
-
-						case "pending":
-							if(this.compareDate(item.item.taskDate)){
-									this.todayTasks.push(item.item);
-									this.pendingTasks.splice(item.index,1);
-									this.addNotifications(this.todayTasks);
-									
-									this.dataService.saveData('current',this.todayTasks);
-									this.dataService.saveData('pending',this.pendingTasks);
-								}
-								else{
-									this.pendingTasks[item.index] = item.item;
-									this.dataService.saveData('pending',this.pendingTasks);
-								}
-
-							break;
-
-						case "completed":
-							this.completedTasks[item.index] = item.item;
-							this.dataService.saveData('completed',this.completedTasks);
-
-							break;
-						
-						default:
-							// code...
-							break;
-					}
+					this.categorize(item);
 				}
 			});
 			saveModal.present();
@@ -133,50 +88,84 @@ export class HomePage {
 
 		var detailModal = this.modalCtrl.create(ItemDetailPage, {item: item, index: index, taskType:taskType});
 		detailModal.onDidDismiss((item) => {
+			console.log(item,'from home');
 			// update status
 			if(item){
-				switch (item.taskType) {
-					case "current":
-						this.todayTasks[item.index].status = !this.todayTasks[item.index].status;
-						this.completedTasks.push(this.todayTasks[item.index]);
-						this.todayTasks.splice(item.index,1);
+					// for updating status
+					switch (item.taskType) {
+						case "current":
+							this.todayTasks[item.index] = item.item;
+							if(item.status){
+								this.completedTasks.push(this.todayTasks[item.index]);
+								this.dataService.saveData('completed',this.completedTasks);
 
-						this.addNotifications(this.todayTasks);
+								this.todayTasks.splice(item.index,1);
+							}
+							else if(!this.compareDate(item.item.taskDate)){
+								this.pendingTasks.push(this.todayTasks[item.index]);
+								this.dataService.saveData('pending',this.pendingTasks);
 
-						this.dataService.saveData('completed',this.completedTasks);
-						this.dataService.saveData('current',this.todayTasks);
-						break;
-
-					case "pending":
-						this.pendingTasks[item.index].status = !this.pendingTasks[item.index].status;
-						this.completedTasks.push(this.pendingTasks[item.index]);
-						this.pendingTasks.splice(item.index,1);
-						this.dataService.saveData('completed',this.completedTasks);
-						this.dataService.saveData('pending',this.pendingTasks);
-						break;
-
-					case "completed":
-						this.completedTasks[item.index].status = !this.completedTasks[item.index].status;
-
-						if(this.compareDate(this.completedTasks[item.index].taskDate)){
-							this.todayTasks.push(this.completedTasks[item.index]);
-							this.addNotifications(this.todayTasks);
+								this.todayTasks.splice(item.index,1);
+							}
 							
-							this.completedTasks.splice(item.index,1);
 							this.dataService.saveData('current',this.todayTasks);
-						}
-						else{
-							this.pendingTasks.push(this.completedTasks[item.index]);
-							this.completedTasks.splice(item.index,1);
+
+							this.addNotifications(this.todayTasks);
+
+							break;
+
+						case "pending":
+							this.pendingTasks[item.index] = item.item;
+							if(item.status){
+								this.completedTasks.push(this.pendingTasks[item.index]);
+								this.dataService.saveData('completed',this.completedTasks);
+
+								this.pendingTasks.splice(item.index,1);
+							}
+							else if(this.compareDate(item.item.taskDate)){
+								this.todayTasks.push(this.pendingTasks[item.index]);
+								this.dataService.saveData('current',this.todayTasks);
+
+								this.pendingTasks.splice(item.index,1);
+							}
+							
 							this.dataService.saveData('pending',this.pendingTasks);
-						}
-						this.dataService.saveData('completed',this.completedTasks);
-						break;
-					
-					default:
-						// code...
-						break;
-				}
+
+							this.addNotifications(this.todayTasks);
+
+							break;
+
+						case "completed":
+							this.completedTasks[item.index] = item.item;
+								if(item.status){
+									// this.completedTasks.push(this.pendingTasks[item.index]);
+									// this.dataService.saveData('completed',this.completedTasks);
+
+									// this.pendingTasks.splice(item.index,1);
+								}
+								else if(this.compareDate(item.item.taskDate)){
+									this.todayTasks.push(this.completedTasks[item.index]);
+									this.dataService.saveData('current',this.todayTasks);
+
+									this.completedTasks.splice(item.index,1);
+								}
+								else{
+									this.pendingTasks.push(this.completedTasks[item.index]);
+									this.dataService.saveData('pending',this.pendingTasks);
+
+									this.completedTasks.splice(item.index,1);
+								}
+								
+								this.dataService.saveData('completed',this.completedTasks);
+
+								this.addNotifications(this.todayTasks);
+								break;
+						
+						default:
+							// code...
+							break;
+					}
+				
 			}
 		});
 		detailModal.present();
@@ -253,11 +242,11 @@ export class HomePage {
 	 
 		        // Cancel any existing notifications
 		        this.localNotifications.cancelAll().then(() => {
-		 
+		 			
 		            // Schedule the new notifications
 		            this.localNotifications.schedule(this.notifications);
 		            this.notifications = [];
-		 
+		 			console.log(this.localNotifications);
 		            /*let alert = this.alertCtrl.create({
 		                title: 'Notifications set',
 		                buttons: ['Ok']
@@ -268,6 +257,55 @@ export class HomePage {
 		        });
 		 
 		    }
+		}
+	}
+
+	categorize(item){
+		switch (item.taskType) {
+			case "current":
+				if(this.compareDate(item.item.taskDate)){
+					this.todayTasks[item.index] = item.item;
+					this.addNotifications(this.todayTasks);
+
+					this.dataService.saveData('current',this.todayTasks);
+
+				}
+				else{
+					this.pendingTasks.push(item.item);
+					this.todayTasks.splice(item.index,1);
+					this.addNotifications(this.todayTasks);
+
+					this.dataService.saveData('pending',this.pendingTasks);
+					this.dataService.saveData('current',this.todayTasks);
+
+				}
+				break;
+
+			case "pending":
+				if(this.compareDate(item.item.taskDate)){
+					this.todayTasks.push(item.item);
+					this.pendingTasks.splice(item.index,1);
+					this.addNotifications(this.todayTasks);
+					
+					this.dataService.saveData('current',this.todayTasks);
+					this.dataService.saveData('pending',this.pendingTasks);
+				}
+				else{
+					this.pendingTasks[item.index] = item.item;
+					this.dataService.saveData('pending',this.pendingTasks);
+				}
+
+				break;
+
+			case "completed":
+				this.completedTasks[item.index] = item.item;
+				this.dataService.saveData('completed',this.completedTasks);
+
+				break;
+			
+			default:
+				// code...
+				break;
 		}
 	}
 }

@@ -28,8 +28,8 @@ export class AddItemPage {
 	taskType;
 	/*
 	status of task
-	false -> In-Queue
-	true -> Completed
+	0 -> In-Queue
+	1 -> Completed
 	*/
 	status;
 
@@ -89,7 +89,7 @@ export class AddItemPage {
 					description: this.description,
 					taskDate: this.taskDate,
 					taskTime: this.taskTime,
-					status: false
+					status: 0
 				};
 				this.view.dismiss(newItem); 
 			}

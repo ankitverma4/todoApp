@@ -30,9 +30,15 @@
 		<ion-card-content>
 			{{item?.description}}
 		</ion-card-content>
-			<button *ngIf="item?.status; else inQueue" ion-button color="danger" float-right (click)="changeStatus()">Put in Queue</button>
-			<ng-template #inQueue>
-				<button float-right ion-button color="success" (click)="changeStatus($event)">Mark Completed</button>
-			</ng-template>
+		
+		<ion-row>
+			<ion-col>
+				<button ion-button small color="danger" float-right (click)="reschedule()">Reschedule</button>
+			</ion-col>
+			<ion-col>
+				<button *ngIf="!item.status" float-right ion-button small color="success" (click)="completed()">Mark Completed</button>
+			</ion-col>
+		</ion-row>
+			
 	</ion-card>
 </ion-content>
