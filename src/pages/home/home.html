@@ -1,31 +1,91 @@
 <ion-header>
   <ion-navbar color="primary">
     
-    <ion-title>
-      TO-DOs
-    </ion-title>
+    <ion-title>TO-DOs</ion-title>
 
-    
-  
   </ion-navbar>
 </ion-header>
 
-<ion-content no-padding>
-	<ion-list>
-    <ion-item-sliding *ngFor="let item of items index as i">
-      <ion-item class="todo" (click)="viewItem(item)">
-        <h3>{{item.title}}</h3>
-        <p float-right>{{item.taskDate}}</p>
-        <p>{{item.description}}</p>
+<ion-content padding>
+
+  <!-- list of tasks -->
+  <ion-list>
+
+    <!-- current tasks -->
+    <ion-list-header>
+      Current
+    </ion-list-header> 
+    
+    <p *ngIf="todayTasks?.length == 0">No current task.</p>
+
+    <ion-item-sliding *ngFor="let item of todayTasks index as i">
+     
+      <ion-item class="todo" (click)="viewItem(item, i, 'current')">
+        <h3>{{item?.title}}</h3>
+        <p float-right>{{item?.taskTime}}</p>
+        <p>{{item?.taskDate}}</p>
       </ion-item>
+
       <ion-item-options slide="left">
-        <button padding color="primary" ion-button icon-only (click)="saveItem(i, item)" >Edit</button>
-        <button color="danger" ion-button icon-only (click)="delete(i)" ><ion-icon name="trash"></ion-icon></button>
+        <button padding color="primary" ion-button icon-only (click)="saveItem(i, item, 'current')" >Edit</button>
+        <button color="danger" ion-button icon-only (click)="delete(i, 'current')" ><ion-icon name="trash"></ion-icon></button>
       </ion-item-options>
+
+    </ion-item-sliding>
+
+    <!-- completed tasks -->
+    <ion-list-header>
+      Completed
+    </ion-list-header>
+
+    <p *ngIf="completedTasks?.length == 0">No task completed yet.</p>
+    <ion-item-sliding *ngFor="let item of completedTasks index as i">
+     
+      <ion-item class="todo" (click)="viewItem(item, i, 'completed')">
+        <h3>{{item?.title}}</h3>
+        <p float-right>{{item?.taskTime}}</p>
+        <p>{{item?.taskDate}}</p>
+      </ion-item>
+
+      <ion-item-options slide="left">
+        <button padding color="primary" ion-button icon-only (click)="saveItem(i, item, 'completed')" >Edit</button>
+        <button color="danger" ion-button icon-only (click)="delete(i, 'today')" ><ion-icon name="trash"></ion-icon></button>
+      </ion-item-options>
+
+    </ion-item-sliding>
+    
+    <!-- in-queue tasks -->
+    <ion-list-header>
+      In-Queue
+    </ion-list-header>
+
+    <p *ngIf="pendingTasks?.length == 0">No task in queue.</p>
+
+    <ion-item-sliding *ngFor="let item of pendingTasks index as i">
+     
+      <ion-item class="todo" (click)="viewItem(item, i, 'pending')">
+        <h3>{{item?.title}}</h3>
+        <p float-right>{{item?.taskTime}}</p>
+        <p>{{item?.taskDate}}</p>
+      </ion-item>
+
+      <ion-item-options slide="left">
+        <button padding color="primary" ion-button icon-only (click)="saveItem(i, item, 'pending')" >Edit</button>
+        <button color="danger" ion-button icon-only (click)="delete(i, 'pending')" ><ion-icon name="trash"></ion-icon></button>
+      </ion-item-options>
+    
     </ion-item-sliding>
   </ion-list>
 
+  <!-- when no content -->
+  <ng-template #noContent>
+      <ion-img class="addTask" width="25%" height="wrap-content" src="assets/imgs/tasks.png"></ion-img>
+      <!-- <img class="addTask" ion-im src="assets/imgs/tasks.png" > -->
+      <p>Add some tasks.</p>
+  </ng-template>
+
   <ion-fab right bottom>
-    <button ion-fab color="light" (click)="saveItem()"><ion-icon name="add"></ion-icon></button>
+    <button ion-fab color="primary" (click)="saveItem()"><ion-icon name="add"></ion-icon></button>
   </ion-fab>
+
 </ion-content>

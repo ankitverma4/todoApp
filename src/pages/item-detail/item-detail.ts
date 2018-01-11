@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, ViewController } from 'ionic-angular';
 
 /**
  * Generated class for the ItemDetailPage page.
@@ -14,13 +14,29 @@ import { NavController, NavParams } from 'ionic-angular';
 })
 export class ItemDetailPage {
 	public item;
-	
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+	index;
+	taskType;
+  constructor(public navCtrl: NavController, public navParams: NavParams, public view: ViewController) {
+  	this.item = this.navParams.get('item');
+  	this.index = this.navParams.get('index');
+  	this.taskType = this.navParams.get('taskType');
   }
 
   ionViewDidLoad() {
   	// fetch task to show
-  	this.item = this.navParams.get('item');  	
   }
 
+  changeStatus(event: any): void{
+  	var data = {
+  		index: this.index,
+  		taskType: this.taskType
+  	}
+  	this.view.dismiss(data);
+  }
+
+  	close(){
+		this.view.dismiss();
+	}
 }
+
+

@@ -15,13 +15,13 @@ export class DataProvider {
   }
 
   // get data from storage
-  getData(){
-  	return this.storage.get('todos');
+  getData(x){
+  	return this.storage.get(x);
   }
 
   // save data in storage
-  saveData(data){
-  	this.storage.set('todos',data);
+  saveData(x:string,data){
+  	this.storage.set(x,data);
   }
 
   // show toast message
