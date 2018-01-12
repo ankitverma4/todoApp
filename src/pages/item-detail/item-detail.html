@@ -36,7 +36,7 @@
 				<button ion-button small color="danger" float-right (click)="reschedule()">Reschedule</button>
 			</ion-col>
 			<ion-col>
-				<button *ngIf="!item.status" float-right ion-button small color="success" (click)="completed()">Mark Completed</button>
+				<button *ngIf="item?.status == 0" float-right ion-button small color="success" (click)="completed()">Mark Completed</button>
 			</ion-col>
 		</ion-row>
 			

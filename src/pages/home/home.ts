@@ -28,6 +28,15 @@ export class HomePage {
     
 	constructor(public navCtrl: NavController, public storage: Storage,public modalCtrl: ModalController, public dataService: DataProvider, public platform: Platform, public alertCtrl: AlertController, public localNotifications: LocalNotifications) {
 
+		// check if coming from Notification
+		this.platform.ready().then((readySource) => {
+			this.localNotifications.on('click', (notification, state) => {
+				console.log(notification,'notif data');
+				var temp = JSON.parse(notification.data);
+		    	this.viewItem(temp.item, temp.index, "current");
+		    })
+		})
+
 		// check if storage have some data
 
 		this.dataService.getData('current').then((data) => {
@@ -234,6 +243,12 @@ export class HomePage {
 	                id: index,
 	                title: 'Pending Task',
 	                text: task.title,
+	                // for details page
+	                data:{
+		                item: task,
+		                taskType: task.taskType,
+		                index: index,
+	                },
 	                at: notificationTime
 	            };
 	            this.notifications.push(notification);

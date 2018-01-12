@@ -21,6 +21,7 @@ export class ItemDetailPage {
   	this.item = this.navParams.get('item');
   	this.index = this.navParams.get('index');
   	this.taskType = this.navParams.get('taskType');
+  	console.log(this.item,'item from view page');
   }
 
   ionViewDidLoad() {
@@ -52,6 +53,7 @@ export class ItemDetailPage {
 		updateModal.onDidDismiss((item) => {
 			if(item){
 				console.log(item, 'update modal');
+				item.item.status = 0;
 				item.status = 0;
 				this.view.dismiss(item);
 			}
